@@ -23,7 +23,7 @@ public class UsersValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;
-        if (repo.findByEmail(user.getEmail()).isPresent()) {
+        if (repo.findByUserName(user.getUserName()).isPresent()) {
             errors.rejectValue("email", "", "Пользователь с таким логином уже существует.");
         }
 
