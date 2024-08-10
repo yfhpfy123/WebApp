@@ -54,31 +54,31 @@
     <h1>Новый пользователь</h1>
     <form action="/auth/save" method="post" th:object="${user}">
         <div th:if="${#fields.hasErrors('name')}" style="color: red;">
-            <p th:errors="*{'name'}">Error message</p>
+            <p th:errors="*{name}">Error message</p>
         </div>
         <label for="name">Имя:</label>
         <input type="text" id="name" placeholder="Введите Имя" name="name" required><br>
 
         <div th:if="${#fields.hasErrors('surname')}" style="color: red;">
-            <p th:errors="*{'surname'}">Error message</p>
+            <p th:errors="*{surname}">Error message</p>
         </div>
         <label for="surname">Фамилия:</label>
         <input type="text" id="surname" placeholder="Введите Фамилию" name="surname" required><br>
 
         <div th:if="${#fields.hasErrors('age')}" style="color: red;">
-            <p th:errors="*{'age'}">Error message</p>
+            <p th:errors="*{age}">Error message</p>
         </div>
         <label for="age">Возраст:</label>
-        <input type="number" id="age" placeholder="Введите возраст" name="age" required><br>
+        <input type="text" id="age" placeholder="Введите возраст" name="age" required><br>
 
-        <div th:if="${#fields.hasErrors('email')}" style="color: red;">
-            <p th:errors="*{'email'}">Error message</p>
+        <div th:if="${#fields.hasErrors('username')}" style="color: red;">
+            <p th:errors="*{username}">Error message</p>
         </div>
-        <label for="email">Логин:</label>
-        <input type="email" id="email" placeholder="Введите email" name="email" required><br>
+        <label for="username">Логин:</label>
+        <input type="text" id="username" placeholder="Введите email" name="username" required><br>
 
         <div th:if="${#fields.hasErrors('password')}" style="color: red;">
-            <p th:errors="*{'password'}">Error message</p>
+            <p th:errors="*{password}">Error message</p>
         </div>
         <div class="form-group">
             <div class="password">

@@ -32,17 +32,17 @@ public class AuthController {
     }
 
     @GetMapping("/new")
-    public String createUser(ModelMap model) {
-        model.addAttribute("user", new User());
-        return "auth/new";
+    public String createUser(@ModelAttribute("user") User user ) {
+        return "auth/registration";
     }
 
     @PostMapping("/save")
     public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         validator.validate(user, bindingResult);
 
+
         if (bindingResult.hasErrors()) {
-            return "auth/new";
+            return "auth/registration";
         }
         userServiceImpl.save(user);
         return "redirect:/auth/login";

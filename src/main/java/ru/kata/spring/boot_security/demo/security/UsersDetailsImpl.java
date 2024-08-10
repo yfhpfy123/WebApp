@@ -26,7 +26,7 @@ public class UsersDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.user.getUserName();
+        return this.user.getUsername();
     }
 
     @Override
@@ -47,5 +47,9 @@ public class UsersDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

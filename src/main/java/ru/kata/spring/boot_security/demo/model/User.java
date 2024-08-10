@@ -11,20 +11,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "Поле не может быть пустым")
-    @Size(min = 2, max = 20, message = "Длина имени должна быть от 2 до 20 символов")
+    @NotEmpty(message = "не может быть пустым")
+    @Size(min = 2, max = 20, message = "от 2 до 20 символов")
     private String name;
-    @NotEmpty(message = "Поле не может быть пустым")
-    @Size(min = 2, max = 20, message = "Длина фамилии должна быть от 2 до 20 символов")
+    @NotEmpty(message = "не может быть пустым")
+    @Size(min = 2, max = 20, message = "от 2 до 20 символов")
     private String surname;
-    @Min(value = 0, message = "Возраст должен быть больше 0")
-    @Max(value = 100, message = "Возраст должен быть меньше 100")
+    @Min(value = 0, message = "больше 0")
+    @Max(value = 100, message = "меньше 100")
     private int age;
-    @NotEmpty(message = "Поле не может быть пустым")
-    @Email
+    @NotEmpty(message = "не может быть пустым")
+    @Email(message = "Некорректный email")
     @Column(unique = true)
-    private String userName;
-    @NotEmpty(message = "Поле не может быть пустым")
+    private String username;
+    @NotEmpty(message = "не может быть пустым")
     private String password;
     @Column
     private String role;
@@ -32,9 +32,9 @@ public class User {
     public User() {
     }
 
-    public User(String name, String userName, String password) {
+    public User(String name, String username, String password) {
         this.name = name;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
     }
 
@@ -54,12 +54,12 @@ public class User {
         this.name = name;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String email) {
-        this.userName = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -70,21 +70,19 @@ public class User {
         this.password = password;
     }
 
-    public @NotEmpty(message = "Поле не может быть пустым") @Size(min = 2, max = 20, message = "Длина фамилии должна быть от 2 до 20 символов") String getSurname() {
+    public String getSurname() {
         return surname;
     }
 
-    public void setSurname(@NotEmpty(message = "Поле не может быть пустым") @Size(min = 2, max = 20, message = "Длина фамилии должна быть от 2 до 20 символов") String surname) {
+    public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    @Min(value = 0, message = "Возраст должен быть больше 0")
-    @Max(value = 100, message = "Возраст должен быть меньше 100")
     public int getAge() {
         return age;
     }
 
-    public void setAge(@Min(value = 0, message = "Возраст должен быть больше 0") @Max(value = 100, message = "Возраст должен быть меньше 100") int age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
@@ -96,14 +94,20 @@ public class User {
         this.role = role;
     }
 
+
+
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + userName + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        final StringBuffer sb = new StringBuffer("User{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", surname='").append(surname).append('\'');
+        sb.append(", age=").append(age);
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", role='").append(role).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override
@@ -111,14 +115,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(userName, user.userName) &&
-                Objects.equals(password, user.password);
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, userName, password);
+        return Objects.hash(id, name, surname, age, username, password, role);
     }
 }
