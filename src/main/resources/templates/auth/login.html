@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход в систему</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Подключаем Bootstrap для стилей -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             display: flex;
@@ -25,6 +25,10 @@
 <div class="login-form">
     <h2>Вход в систему</h2>
     <form action="/process_login" method="post">
+        <div class="form-group">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        </div>
+
         <div th:if="${param.error}">
             <div class="alert alert-danger">Неверное имя пользователя или пароль.</div>
         </div>

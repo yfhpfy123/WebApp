@@ -17,8 +17,8 @@ public class User {
     @NotEmpty(message = "не может быть пустым")
     @Size(min = 2, max = 20, message = "от 2 до 20 символов")
     private String surname;
-    @Min(value = 0, message = "больше 0")
-    @Max(value = 100, message = "меньше 100")
+    @Min(value = 0, message = "должен быть больше 0")
+    @Max(value = 100, message = "должен быть меньше 100")
     private int age;
     @NotEmpty(message = "не может быть пустым")
     @Email(message = "Некорректный email")
@@ -32,10 +32,21 @@ public class User {
     public User() {
     }
 
-    public User(String name, String username, String password) {
+    public User(String name, String surname, int age, String username, String password) {
         this.name = name;
+        this.surname = surname;
+        this.age = age;
         this.username = username;
         this.password = password;
+    }
+
+    public User(String name, String surname, int age, String username, String password, String role) {
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public Long getId() {

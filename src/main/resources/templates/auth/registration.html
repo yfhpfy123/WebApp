@@ -47,43 +47,60 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+        .error-box {
+            width: 90%;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            height: 7px;
+            line-height: 1.5;
+            display: flex;
+            border-radius: 3px;
+            padding: 5px 10px;
+            align-items: center;
+        }
+        .error-box p {
+            margin: 0;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Новый пользователь</h1>
-    <form action="/auth/save" method="post" th:object="${user}">
-        <div th:if="${#fields.hasErrors('name')}" style="color: red;">
-            <p th:errors="*{name}">Error message</p>
-        </div>
+    <form th:action="@{/auth/registration}" th:method="POST" th:object="${user}">
+
         <label for="name">Имя:</label>
-        <input type="text" id="name" placeholder="Введите Имя" name="name" required><br>
+        <div th:if="${#fields.hasErrors('name')}" class="error-box">
+            <p th:errors="*{name}">Error message</p>
+        </div><br>
+        <input type="text" id="name" placeholder="Введите Имя" th:field="*{name}" required ><br>
 
-        <div th:if="${#fields.hasErrors('surname')}" style="color: red;">
-            <p th:errors="*{surname}">Error message</p>
-        </div>
         <label for="surname">Фамилия:</label>
-        <input type="text" id="surname" placeholder="Введите Фамилию" name="surname" required><br>
+        <div th:if="${#fields.hasErrors('surname')}" class="error-box">
+            <p th:errors="*{surname}">Error message</p>
+        </div><br>
+        <input type="text" id="surname" placeholder="Введите Фамилию" th:field="*{surname}" required><br>
 
-        <div th:if="${#fields.hasErrors('age')}" style="color: red;">
-            <p th:errors="*{age}">Error message</p>
-        </div>
         <label for="age">Возраст:</label>
-        <input type="text" id="age" placeholder="Введите возраст" name="age" required><br>
+        <div th:if="${#fields.hasErrors('age')}" class="error-box">
+            <p th:errors="*{age}">Error message</p>
+        </div><br>
+        <input type="text" id="age" placeholder="Введите возраст" th:field="*{age}" required><br>
 
-        <div th:if="${#fields.hasErrors('username')}" style="color: red;">
-            <p th:errors="*{username}">Error message</p>
-        </div>
         <label for="username">Логин:</label>
-        <input type="text" id="username" placeholder="Введите email" name="username" required><br>
+        <div th:if="${#fields.hasErrors('username')}" class="error-box">
+            <p th:errors="*{username}">Error message</p>
+        </div><br>
+        <input type="text" id="username" placeholder="Введите email" th:field="*{username}" required><br>
 
-        <div th:if="${#fields.hasErrors('password')}" style="color: red;">
-            <p th:errors="*{password}">Error message</p>
-        </div>
         <div class="form-group">
             <div class="password">
                 <label for="password-input">Пароль:</label>
-                <input type="password" id="password-input" placeholder="Введите пароль" name="password" class="form-control" required>
+                <div th:if="${#fields.hasErrors('password')}" class="error-box">
+                    <p th:errors="*{password}">Error message</p>
+                </div><br>
+                <input type="password" id="password-input" placeholder="Введите пароль" th:field="*{password}" class="form-control" required>
                 <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
             </div>
         </div>

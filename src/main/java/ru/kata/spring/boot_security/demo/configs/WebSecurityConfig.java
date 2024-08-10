@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -33,15 +34,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
                 .authorizeRequests()
-                .antMatchers( "/auth/login", "/auth/new", "/auth/save", "error").permitAll()
+                .antMatchers( "/auth/login", "/auth/new", "/auth/registration", "error").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/auth/login").loginProcessingUrl("/process_login")
                 .defaultSuccessUrl("/", true)
-                .failureUrl("/auth/login?error");
+                .failureUrl("/auth/login?error")
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/auth/login");
 //                .formLogin().successHandler(successUserHandler)
 //                .permitAll()
 //                .and()
@@ -51,12 +53,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(service);
+        auth.userDetailsService(service).passwordEncoder(getPasswordEncoder());
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     // аутентификация inMemory
