@@ -25,10 +25,14 @@
             background-color: #4CAF50;
             color: white;
         }
+        .btn-danger {
+            width: 100%;
+        }
         .btn-primary {
             background-color: #4CAF50;
             border-color: #4CAF50;
             border-radius: 4px;
+            width: 100%;
         }
         .btn-primary:hover {
             background-color: #45a049;
@@ -62,8 +66,8 @@
             <td th:text="'*******'">Пароль</td>
             <td>
                 <a th:href="@{/users/admin/edit?id={id}(id=${user.id})}" class="btn btn-primary">Изменить</a>
-                <a th:href="@{/users/admin/delete?id={id}(id=${user.id})}" class="btn btn-danger">Удалить</a>
                 <a th:href="@{/users/user?id={id}(id=${user.id})}" class="btn btn-primary">Показать</a>
+                <a th:href="@{/users/admin/delete?id={id}(id=${user.id})}" class="btn btn-danger">Удалить</a>
             </td>
         </tr>
         </tbody>
