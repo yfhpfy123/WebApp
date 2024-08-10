@@ -22,7 +22,6 @@ public class User {
     private int age;
     @NotEmpty(message = "не может быть пустым")
     @Email(message = "Некорректный email")
-    @Column(unique = true)
     private String username;
     @NotEmpty(message = "не может быть пустым")
     private String password;

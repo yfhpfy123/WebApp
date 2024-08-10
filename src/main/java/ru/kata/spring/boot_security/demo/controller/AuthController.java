@@ -36,17 +36,16 @@ public class AuthController {
         return "auth/registration";
     }
 
-    @PostMapping("/registration")
+    @PostMapping("/new")
     public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         validator.validate(user, bindingResult);
-
 
         if (bindingResult.hasErrors()) {
             return "auth/registration";
         }
+
         userServiceImpl.save(user);
         return "redirect:/auth/login";
-
     }
 
 }

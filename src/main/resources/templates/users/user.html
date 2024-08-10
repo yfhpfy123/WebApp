@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали пользователя</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            padding: 10px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-text {
+            font-size: 16px;
+            color: black;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            border-radius: 4px;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Детали пользователя
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>ID:</strong> <span th:text="${user.id}">ID</span></p>
+            <p class="card-text"><strong>Имя:</strong> <span th:text="${user.name}">ФИО</span></p>
+            <p class="card-text"><strong>Фамилия:</strong> <span th:text="${user.surname}">ID</span></p>
+            <p class="card-text"><strong>Возраст:</strong> <span th:text="${user.age}">ID</span></p>
+            <p class="card-text"><strong>логин:</strong> <span th:text="${user.username}">логин</span></p>
+            <p class="card-text"><strong>пароль:</strong> <span th:text="'*******'">пароль</span></p>
+            <div>
+                <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a th:href="@{/users/admin/edit?id={id}(id=${user.id})}" class="btn btn-primary">Изменить</a>
+                <a th:href="@{/users/admin/delete?id={id}(id=${user.id})}" class="btn btn-danger">Удалить</a>
+                <a th:href="@{/users/admin/home}" class="btn btn-danger">Назад к списку пользователей</a>
+                </div>
+                <p></p>
+                <form th:action="@{/logout}" th:method="POST">
+                    <input type="submit" class="btn-primary" value="Logout"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

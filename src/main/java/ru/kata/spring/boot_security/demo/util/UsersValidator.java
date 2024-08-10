@@ -27,4 +27,11 @@ public class UsersValidator implements Validator {
             errors.rejectValue("username", "", "Пользователь с таким логином уже существует.");
         }
     }
+
+    public void unValidate(Object target, Errors errors) {
+        User user = (User) target;
+        if (!repo.findByUsername(user.getUsername()).isPresent()) {
+            errors.rejectValue("username", "", "Пользователь с таким логином не существует.");
+        }
+    }
 }

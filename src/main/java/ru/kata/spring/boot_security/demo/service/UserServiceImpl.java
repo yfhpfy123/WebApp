@@ -36,13 +36,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void save(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER");
+        if (user.getRole() == null) {
+            user.setRole("ROLE_USER");
+        }
         userRepository.save(user);
     }
 
     @Override
     @Transactional
     public void update(Long id, User updatedUser) {
+        updatedUser.setPassword(encoder.encode(updatedUser.getPassword()));
         updatedUser.setId(id);
         userRepository.save(updatedUser);
     }

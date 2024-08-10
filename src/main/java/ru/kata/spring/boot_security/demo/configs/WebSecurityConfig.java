@@ -19,36 +19,36 @@ import ru.kata.spring.boot_security.demo.service.UserDetailServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//    private final SuccessUserHandler successUserHandler;
+    private final SuccessUserHandler successUserHandler;
     private final UserDetailServiceImpl service;
+
     @Autowired
-    public WebSecurityConfig(UserDetailServiceImpl service) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailServiceImpl service) {
+        this.successUserHandler = successUserHandler;
         this.service = service;
     }
-
-
-//    public WebSecurityConfig(SuccessUserHandler successUserHandler, AuthProviderImpl authProvider) {
-//        this.successUserHandler = successUserHandler;
-//        this.authProvider = authProvider;
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers( "/auth/login", "/auth/new", "/auth/registration", "error").permitAll()
+                .antMatchers("/users/admin/**").hasRole("ADMIN")
+                .antMatchers("/users/user").hasAnyRole("ADMIN", "USER")
+                .antMatchers( "/","/auth/login", "/auth/new", "error")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/auth/login").loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/", true)
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/process_login")
+                .successHandler(successUserHandler)
                 .failureUrl("/auth/login?error")
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/auth/login");
-//                .formLogin().successHandler(successUserHandler)
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll();
+                .permitAll()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .permitAll();
     }
 
     @Override
@@ -60,18 +60,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    // аутентификация inMemory
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("user")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
 }

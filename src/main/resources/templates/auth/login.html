@@ -19,6 +19,15 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .btn-primary {
+            display: inline-block;
+            background-color: #45a049;
+            color: #fff;
+            border: none;
+            padding: 7px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -44,16 +53,7 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Войти</button>
-        <a href="/auth/new" class="btn btn-primary"
-           style="display: inline-block;
-          background-color: #45a049;
-          color: #fff;
-          border: none;
-          padding: 7px 20px;
-          border-radius: 5px;
-          text-decoration: none;">
-            Регистрация
-        </a>
+        <a href="/auth/new" class="btn btn-primary">Регистрация</a>
     </form>
     <script>
         function show_hide_password(target){

@@ -49,6 +49,9 @@
             border-radius: 3px;
             cursor: pointer;
         }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
         input[type="button"] {
             background-color: #dc3545;
             color: #fff;
@@ -56,9 +59,6 @@
             padding: 10px 20px;
             border-radius: 3px;
             cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
         }
         .error-box {
             width: 90%;
@@ -80,8 +80,8 @@
 </head>
 <body>
 <div class="container">
-    <h1>Регистрация</h1>
-    <form th:action="@{/auth/new}" th:method="POST" th:object="${user}">
+    <h1>Новый пользователь</h1>
+    <form th:action="@{/users/admin/new}" th:method="POST" th:object="${user}">
 
         <label for="name">Имя:</label>
         <div th:if="${#fields.hasErrors('name')}" class="error-box">
@@ -117,8 +117,13 @@
                 <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
             </div>
         </div>
+        <label for="role">Права:</label>
+        <select id="role" th:field="*{role}" required>
+            <option value="" disabled selected>Права доступа</option>
+            <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
+        </select><br>
 
-        <input type="submit" value="Зарегистрироваться">
+        <input type="submit" value="Сохранить">
         <input type="button" value="Отмена" onclick="history.back()">
     </form>
     <script>
@@ -134,6 +139,10 @@
             return false;
         }
     </script>
+    <p></p>
+    <form th:action="@{/logout}" th:method="POST">
+        <input type="submit" class="btn-primary" value="Logout"/>
+    </form>
 </div>
 </body>
 </html>
