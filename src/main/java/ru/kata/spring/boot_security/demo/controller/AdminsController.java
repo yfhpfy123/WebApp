@@ -1,7 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -28,7 +28,9 @@ public class AdminsController {
         this.userServiceImpl = userService;
     }
     @GetMapping()
-    public String findAll(ModelMap model) {
+    public String findAll(Authentication auth, ModelMap model) {
+        String currentUsername = auth.getName();
+        model.addAttribute("user", userServiceImpl.findByUsername(currentUsername));
         model.addAttribute("users", userServiceImpl.findAll());
         return "admin/all";
     }

@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.model;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table
@@ -25,8 +26,12 @@ public class User {
     private String username;
     @NotEmpty(message = "не может быть пустым")
     private String password;
-    @Column
-    private String role;
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     public User() {
     }
@@ -39,13 +44,13 @@ public class User {
         this.password = password;
     }
 
-    public User(String name, String surname, int age, String username, String password, String role) {
+    public User(String name, String surname, int age, String username, String password, Set<Role> role) {
         this.name = name;
         this.surname = surname;
         this.age = age;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = role;
     }
 
     public Long getId() {
@@ -96,12 +101,12 @@ public class User {
         this.age = age;
     }
 
-    public String getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<Role> role) {
+        this.roles = role;
     }
 
 
@@ -115,7 +120,7 @@ public class User {
         sb.append(", age=").append(age);
         sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
-        sb.append(", role='").append(role).append('\'');
+        sb.append(", role='").append(roles).append('\'');
         sb.append('}');
         return sb.toString();
     }
@@ -125,11 +130,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(role, user.role);
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, age, username, password, role);
+        return Objects.hash(id, name, surname, age, username, password, roles);
     }
 }

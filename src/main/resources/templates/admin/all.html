@@ -5,42 +5,38 @@
     <title>Список пользователей</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
+        .styled-header {
+            background-color: #343a40; /* Темно-серый цвет */
+            color: #ffffff; /* Белый цвет текста */
+            padding: 10px 20px;
         }
-        .container {
-            margin-top: 50px;
+        .styled-header .user-name {
+            font-weight: bold; /* Жирный шрифт для имени пользователя */
         }
-        .table {
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .styled-header .user-roles {
+            font-weight: normal; /* Обычный шрифт для ролей */
         }
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
+        .styled-header a.logout-link {
+            color: #adb5bd; /* Серый цвет для ссылки на logout */
+            text-decoration: none; /* Убираем подчеркивание */
         }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-danger {
-            width: 100%;
-        }
-        .btn-primary {
-            background-color: #4CAF50;
-            border-color: #4CAF50;
-            border-radius: 4px;
-            width: 100%;
-        }
-        .btn-primary:hover {
-            background-color: #45a049;
-            border-color: #45a049;
+        .styled-header a.logout-link:hover {
+            color: #6c757d; /* Цвет при наведении (чуть темнее) */
         }
     </style>
 </head>
 <body>
+
+<header class="styled-header d-flex justify-content-between align-items-center" th:object="${user}">
+    <div id="start">
+        <span class="user-name" th:text="*{username}">Username</span> with roles: <span class="user-roles" th:text="*{role}">Role</span>
+    </div>
+    <div>
+        <form th:action="@{/logout}" th:method="POST">
+            <a type="submit" class="logout-link">Logout</a>
+        </form>
+    </div>
+</header>
 <div class="container mt-5">
     <h1>Список пользователей</h1>
 
@@ -74,10 +70,7 @@
     </table>
 
     <a th:href="@{/users/admin/new}" class="btn btn-primary">Добавить пользователя</a>
-    <p></p>
-    <form th:action="@{/logout}" th:method="POST">
-        <input type="submit" class="btn-primary" value="Logout"/>
-    </form>
+
 </div>
 </body>
 </html>

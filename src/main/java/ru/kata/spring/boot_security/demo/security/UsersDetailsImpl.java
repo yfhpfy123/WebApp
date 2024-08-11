@@ -19,7 +19,7 @@ public class UsersDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
+        return user.getRoles();
     }
 
     @Override
