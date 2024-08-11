@@ -13,18 +13,18 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-//    private final PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
     private final UserRepository userRepository;
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    //    @Autowired
-//    public UserServiceImpl(PasswordEncoder encoder, UserRepository userRepository) {
-//        this.encoder = encoder;
+//    @Autowired
+//    public UserServiceImpl(UserRepository userRepository) {
 //        this.userRepository = userRepository;
 //    }
+
+        @Autowired
+    public UserServiceImpl(PasswordEncoder encoder, UserRepository userRepository) {
+        this.encoder = encoder;
+        this.userRepository = userRepository;
+    }
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void save(User user) {
-//        user.setPassword(encoder.encode(user.getPassword()));
+        user.setPassword(encoder.encode(user.getPassword()));
         if (user.getRole() == null) {
             user.setRole("ROLE_USER");
         }
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(Long id, User updatedUser) {
-//        updatedUser.setPassword(encoder.encode(updatedUser.getPassword()));
+        updatedUser.setPassword(encoder.encode(updatedUser.getPassword()));
         updatedUser.setId(id);
         userRepository.save(updatedUser);
     }

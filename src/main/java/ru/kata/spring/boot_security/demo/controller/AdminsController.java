@@ -16,7 +16,6 @@ import java.util.List;
 
 
 @Controller
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class AdminsController {
 
