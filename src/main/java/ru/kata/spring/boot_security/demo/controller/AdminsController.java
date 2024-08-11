@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/users/admin")
+@RequestMapping("/admin")
 public class AdminsController {
 
     private final UsersValidator validator;
@@ -28,10 +28,10 @@ public class AdminsController {
         this.validator = validator;
         this.userServiceImpl = userService;
     }
-    @GetMapping("/home")
+    @GetMapping()
     public String findAll(ModelMap model) {
         model.addAttribute("users", userServiceImpl.findAll());
-        return "users/admin/all";
+        return "admin/all";
     }
 
     @GetMapping("/user")
@@ -43,7 +43,7 @@ public class AdminsController {
     public String createUser(@ModelAttribute("user") User user, ModelMap model) {
         List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
         model.addAttribute("roles", roles);
-        return "users/admin/new";
+        return "admin/new";
     }
 
     @PostMapping("/new")
@@ -53,11 +53,11 @@ public class AdminsController {
         if (bindingResult.hasErrors()) {
             List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
             model.addAttribute("roles", roles);
-            return "users/admin/new";
+            return "admin/new";
         }
 
         userServiceImpl.save(user);
-        return "redirect:/users/admin/home";
+        return "redirect:/admin";
     }
 
 
@@ -66,7 +66,7 @@ public class AdminsController {
         List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
         model.addAttribute("roles", roles);
         model.addAttribute("user", userServiceImpl.findOne(id));
-        return "users/admin/edit";
+        return "admin/edit";
     }
 
     @PostMapping("/edit")
@@ -76,10 +76,10 @@ public class AdminsController {
             List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
             model.addAttribute("roles", roles);
             model.addAttribute("user", user);
-            return "users/admin/edit";
+            return "admin/edit";
         }
         userServiceImpl.update(id, user);
-        return "redirect:/users/admin/home";
+        return "redirect:/admin";
     }
 
     @GetMapping("/delete")
@@ -90,7 +90,7 @@ public class AdminsController {
             throw new IllegalArgumentException("Пользователь не найден!");
         }
         userServiceImpl.delete(id);
-        return "redirect:/users/admin/home";
+        return "redirect:/admin";
     }
 
 }

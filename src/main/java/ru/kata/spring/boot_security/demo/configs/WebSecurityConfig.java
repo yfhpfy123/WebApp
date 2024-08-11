@@ -20,29 +20,33 @@ import ru.kata.spring.boot_security.demo.service.UserDetailServiceImpl;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
-    private final UserDetailServiceImpl service;
-
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailServiceImpl service) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
         this.successUserHandler = successUserHandler;
-        this.service = service;
     }
+//    private final UserDetailServiceImpl service;
+
+//    @Autowired
+//    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailServiceImpl service) {
+//        this.successUserHandler = successUserHandler;
+//        this.service = service;
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/users/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/users/user").hasAnyRole("ADMIN", "USER")
-                .antMatchers( "/","/auth/login", "/auth/new", "error")
+                .antMatchers( "/", "error")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/auth/login")
+                .loginPage("/")
                 .loginProcessingUrl("/process_login")
                 .successHandler(successUserHandler)
-                .failureUrl("/auth/login?error")
+                .failureUrl("/?error")
                 .permitAll()
                 .and()
                 .logout()
@@ -51,13 +55,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(service).passwordEncoder(getPasswordEncoder());
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(service).passwordEncoder(getPasswordEncoder());
+//    }
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder getPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }
