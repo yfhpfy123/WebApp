@@ -26,7 +26,7 @@ public class User {
     private String username;
     @NotEmpty(message = "не может быть пустым")
     private String password;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -36,21 +36,14 @@ public class User {
     public User() {
     }
 
-    public User(String name, String surname, int age, String username, String password) {
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.username = username;
-        this.password = password;
-    }
 
-    public User(String name, String surname, int age, String username, String password, Set<Role> role) {
+    public User(String name, String surname, int age, String username, String password, Set<Role> roles) {
         this.name = name;
         this.surname = surname;
         this.age = age;
         this.username = username;
         this.password = password;
-        this.roles = role;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -105,8 +98,8 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Set<Role> role) {
-        this.roles = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
 
@@ -130,11 +123,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, age, username, password, roles);
+        return Objects.hash(id, name, surname, age, username, password);
     }
 }

@@ -19,14 +19,15 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
-    private  final RolesRepository rolesRepository;
+    private final RolesRepository rolesRepository;
 
-        @Autowired
+
+    @Autowired
     public UserServiceImpl(PasswordEncoder encoder, UserRepository userRepository, RolesRepository rolesRepository) {
         this.encoder = encoder;
         this.userRepository = userRepository;
-            this.rolesRepository = rolesRepository;
-        }
+        this.rolesRepository = rolesRepository;
+    }
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
@@ -44,13 +45,20 @@ public class UserServiceImpl implements UserService {
         if (rolesRepository.findAll().isEmpty()) {
             rolesRepository.save(new Role("USER"));
             rolesRepository.save(new Role("ADMIN"));
+            System.out.println("7");
         }
-        Set<Role> defaultRole = Collections.singleton(rolesRepository.getById(2L));
+        Set<Role> defaultRole = Collections.singleton(rolesRepository.getById(3L));
         user.setPassword(encoder.encode(user.getPassword()));
         if (user.getRoles() == null) {
             user.setRoles(defaultRole);
+            System.out.println("8");
+        }
+        if (user.getRoles() != null) {
+            user.getRoles().forEach(role -> role.getUsers().add(user));
+            System.out.println("9");
         }
         userRepository.save(user);
+        System.out.println("10");
     }
 
     @Override
@@ -73,6 +81,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
+        System.out.println("6");
         return user.orElse(null);
     }
+
+    @Override
+    public List<Role> getRoles() {
+        System.out.println("5");
+        return rolesRepository.findAll();
+    }
+
 }

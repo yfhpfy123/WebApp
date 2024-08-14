@@ -1,96 +1,90 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.RolesRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.util.UsersValidator;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
+@PreAuthorize("hasAnyAuthority('ADMIN')")
 @RequestMapping("/admin")
 public class AdminsController {
 
     private final UsersValidator validator;
-    private final UserService userServiceImpl;
+    private final UserService userService;
+    private final RolesRepository rolesRepository;
 
     @Autowired
-    public AdminsController(UsersValidator validator, UserService userService) {
+    public AdminsController(UsersValidator validator, UserService userService, RolesRepository rolesRepository) {
         this.validator = validator;
-        this.userServiceImpl = userService;
+        this.userService = userService;
+        this.rolesRepository = rolesRepository;
     }
-    @GetMapping()
-    public String findAll(Authentication auth, ModelMap model) {
-        String currentUsername = auth.getName();
-        model.addAttribute("user", userServiceImpl.findByUsername(currentUsername));
-        model.addAttribute("users", userServiceImpl.findAll());
-        return "admin/all";
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Set.class, "roles", new CustomCollectionEditor(Set.class) {
+            @Override
+            protected Object convertElement(Object element) {
+                String roleName = (String) element;
+                return rolesRepository.findByName(roleName);
+            }
+        });
     }
-
-    @GetMapping("/user")
-    public String findOne(@RequestParam("id") Long id, ModelMap model) {
-        model.addAttribute("user", userServiceImpl.findOne(id));
-        return "users/user";
+    @GetMapping
+    public String showAdminPanel(@ModelAttribute("user") User user, ModelMap model, @AuthenticationPrincipal UserDetails details) {
+        model.addAttribute("roles", userService.getRoles());
+        model.addAttribute("auth", userService.findByUsername(details.getUsername()));
+        model.addAttribute("users", userService.findAll());
+        return "admin_panel";
     }
-    @GetMapping("/new")
-    public String createUser(@ModelAttribute("user") User user, ModelMap model) {
-        List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
-        model.addAttribute("roles", roles);
-        return "admin/new";
-    }
-
     @PostMapping("/new")
-    public String save(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, ModelMap model) {
+    public String add(@AuthenticationPrincipal UserDetails details, @ModelAttribute("user") @Valid User user, BindingResult bindingResult, ModelMap model) {
+        System.out.println("1");
         validator.validate(user, bindingResult);
-
         if (bindingResult.hasErrors()) {
-            List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
-            model.addAttribute("roles", roles);
-            return "admin/new";
+            System.out.println("Error " + bindingResult);
+            System.out.println("4");
+            model.addAttribute("roles", userService.getRoles());
+            model.addAttribute("auth", userService.findByUsername(details.getUsername()));
+            model.addAttribute("users", userService.findAll());
+            return "redirect:/admin#new";
         }
-
-        userServiceImpl.save(user);
+        userService.save(user);
+        System.out.println("11");
         return "redirect:/admin";
     }
-
-
-    @GetMapping("/edit")
-    public String edit(@RequestParam("id") Long id, ModelMap model) {
-        List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
-        model.addAttribute("roles", roles);
-        model.addAttribute("user", userServiceImpl.findOne(id));
-        return "admin/edit";
-    }
-
     @PostMapping("/edit")
-    public String update(@RequestParam("id") Long id, ModelMap model, @ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-
+    public String edit(@AuthenticationPrincipal UserDetails details, @RequestParam("id") Long id, @ModelAttribute("user") @Valid User user, BindingResult bindingResult, ModelMap model) {
         if (bindingResult.hasErrors()) {
-            List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
-            model.addAttribute("roles", roles);
-            model.addAttribute("user", user);
-            return "admin/edit";
+            model.addAttribute("roles", userService.getRoles());
+            model.addAttribute("auth", userService.findByUsername(details.getUsername()));
+            model.addAttribute("users", userService.findAll());
+            model.addAttribute("openModal", true);
+            return "admin_panel";
         }
-        userServiceImpl.update(id, user);
+        userService.update(id,user);
         return "redirect:/admin";
     }
-
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam("id") Long id) {
-        User user = userServiceImpl.findOne(id);
-
-        if (user == null) {
-            throw new IllegalArgumentException("Пользователь не найден!");
-        }
-        userServiceImpl.delete(id);
+        userService.delete(id);
         return "redirect:/admin";
     }
 

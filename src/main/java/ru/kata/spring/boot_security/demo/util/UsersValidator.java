@@ -22,16 +22,11 @@ public class UsersValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        System.out.println("2");
         User user = (User) target;
         if (repo.findByUsername(user.getUsername()).isPresent()) {
             errors.rejectValue("username", "", "Пользователь с таким логином уже существует.");
-        }
-    }
-
-    public void unValidate(Object target, Errors errors) {
-        User user = (User) target;
-        if (!repo.findByUsername(user.getUsername()).isPresent()) {
-            errors.rejectValue("username", "", "Пользователь с таким логином не существует.");
+            System.out.println("3");
         }
     }
 }
