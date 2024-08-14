@@ -154,10 +154,10 @@
                                 </div>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary" style="background-color: #17a2b8; border: none" data-toggle="modal" data-target="#staticBackdrop">Edit</button>
+                                <button type="button" class="btn btn-primary" style="background-color: #17a2b8; border: none" data-toggle="modal" th:attr="data-target='#staticBackdropEdit-' + ${user.id}">Edit</button>
 
                                 <!-- Модальное окно -->
-                                <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal fade" th:id="'staticBackdropEdit-' + ${user.id}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -175,22 +175,22 @@
                                                 <div class="form-group">
                                                     <label for="name">First Name</label>
                                                     <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="alert alert-danger" role="alert"></div>
-                                                    <input type="text" class="form-control" th:field="*{name}" id="name" th:placeholder="*{name}" required>
+                                                    <input type="text" class="form-control" th:field="*{name}" id="name" th:value="*{name}" th:placeholder="*{name}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="surname">Last Name</label>
                                                     <div th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="alert alert-danger" role="alert"></div>
-                                                    <input type="text" class="form-control" th:field="*{surname}" id="surname" th:placeholder="*{surname}" required>
+                                                    <input type="text" class="form-control" th:field="*{surname}" id="surname" th:value="*{surname}" th:placeholder="*{surname}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="age">Age</label>
                                                     <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="alert alert-danger" role="alert"></div>
-                                                    <input type="number" class="form-control" th:field="*{age}" id="age" th:placeholder="*{age}" required>
+                                                    <input type="number" class="form-control" th:field="*{age}" id="age" th:value="*{age}" th:placeholder="*{age}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="username">Username</label>
                                                     <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="alert alert-danger" role="alert"></div>
-                                                    <input type="email" class="form-control" th:field="*{username}" id="username" th:placeholder="*{username}" required>
+                                                    <input type="email" class="form-control" th:field="*{username}" id="username" th:value="*{username}" th:placeholder="*{username}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="password">Password</label>
@@ -200,24 +200,24 @@
                                                 <div class="form-group">
                                                     <label for="role">Role</label>
                                                     <div th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}" class="alert alert-danger" role="alert"></div>
-                                                    <select multiple class="form-control" th:field="*{roles}" id="role" required>
-                                                        <option th:each="role : *{roles}" th:text="${role}" th:value="${role}"></option>
+                                                    <select multiple class="form-control" th:field="*{roles}" id="role" th:value="*{roles}" required>
+                                                        <option th:each="role : ${roles}" th:text="${role}" th:value="${role}"></option>
                                                     </select>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                                    </div>
                                                 </div>
                                                 </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Edit</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </td>
-                            <td><button type="button" class="btn btn-primary" style="background-color: #dc3545; border: none" data-toggle="modal" data-target="#staticBackdrop1">Delete</button>
+                            <td><button type="button" class="btn btn-primary" style="background-color: #dc3545; border: none" data-toggle="modal" th:attr="data-target='#staticBackdropDelete-' + ${user.id}">Delete</button>
 
                                 <!-- Модальное окно -->
-                                <div class="modal fade" id="staticBackdrop1" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal fade" th:id="'staticBackdropDelete-' + ${user.id}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -227,7 +227,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <form th:action="@{/admin}" th:object="${user}">
+                                                <form th:action="@{/admin/delete?id={id}(id=${user.id})}" th:method="POST" th:object="${user}">
                                                     <div class="form-group">
                                                         <label for="did">ID</label>
                                                         <input type="text" class="form-control" th:field="*{id}" th:value="*{id}" id="did" th:placeholder="*{id}" disabled>
@@ -254,11 +254,11 @@
                                                             <option th:each="role : *{roles}" th:text="${role}" th:value="${role}"></option>
                                                         </select>
                                                     </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" style="background-color: #dc3545; border: none" class="btn btn-primary">Delete</button>
+                                                    </div>
                                                 </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="submit" style="background-color: #dc3545; border: none" class="btn btn-primary">Delete</button>
                                             </div>
                                         </div>
                                     </div>
