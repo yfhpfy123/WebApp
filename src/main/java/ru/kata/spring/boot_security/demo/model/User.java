@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,18 +27,19 @@ public class User {
     private String username;
     @NotEmpty(message = "не может быть пустым")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public static final User ADMIN = new User("admin", "admin", 30, "admin@mail.ru", "1", Set.of(Role.ADMIN, Role.USER));
     public static final User USER = new User("user", "user", 30, "user@mail.ru", "1", Set.of(Role.USER));
     public static final Set<Role> DEFAULT_ROLES = Set.of(Role.USER);
 
     public User() {
+        this.roles = new HashSet<>();
     }
 
 

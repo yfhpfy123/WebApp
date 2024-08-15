@@ -9,12 +9,13 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RolesRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder encoder;
@@ -46,9 +47,9 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
             user.setRoles(User.DEFAULT_ROLES);
         }
-        Set<Role> roles = user.getRoles();
+        Set<Role> roles = new HashSet<>(rolesRepository.findAll());
         for (Role role : roles) {
-            role.addUser(user);
+            role.getUsers().add(user);
             rolesRepository.save(role);
         }
 
@@ -73,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElse(null);
@@ -85,8 +87,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Role getRoleByName(String name) {
-        return rolesRepository.findByName(name);
+        return rolesRepository.findByName(name).orElse(null);
     }
 
+    @Override
+    @Transactional
+    public void addRole(Role role) {
+        rolesRepository.save(role);
+    }
 
 }
