@@ -42,23 +42,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void save(User user) {
-        if (rolesRepository.findAll().isEmpty()) {
-            rolesRepository.save(new Role("USER"));
-            rolesRepository.save(new Role("ADMIN"));
-            System.out.println("7");
-        }
-        Set<Role> defaultRole = Collections.singleton(rolesRepository.getById(3L));
         user.setPassword(encoder.encode(user.getPassword()));
-        if (user.getRoles() == null) {
-            user.setRoles(defaultRole);
-            System.out.println("8");
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(User.DEFAULT_ROLES);
         }
-        if (user.getRoles() != null) {
-            user.getRoles().forEach(role -> role.getUsers().add(user));
-            System.out.println("9");
+        Set<Role> roles = user.getRoles();
+        for (Role role : roles) {
+            role.addUser(user);
+            rolesRepository.save(role);
         }
+
         userRepository.save(user);
-        System.out.println("10");
     }
 
     @Override
@@ -81,14 +75,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        System.out.println("6");
         return user.orElse(null);
     }
 
     @Override
     public List<Role> getRoles() {
-        System.out.println("5");
         return rolesRepository.findAll();
     }
+
+    @Override
+    public Role getRoleByName(String name) {
+        return rolesRepository.findByName(name);
+    }
+
 
 }

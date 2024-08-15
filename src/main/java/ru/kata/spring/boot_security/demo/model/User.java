@@ -33,8 +33,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    public static final User ADMIN = new User("admin", "admin", 30, "admin@mail.ru", "1", Set.of(Role.ADMIN, Role.USER));
+    public static final User USER = new User("user", "user", 30, "user@mail.ru", "1", Set.of(Role.USER));
+    public static final Set<Role> DEFAULT_ROLES = Set.of(Role.USER);
+
     public User() {
     }
+
 
 
     public User(String name, String surname, int age, String username, String password, Set<Role> roles) {
@@ -102,7 +107,9 @@ public class User {
         this.roles = roles;
     }
 
-
+    public void addRole(Role role) {
+        roles.add(role);
+    }
 
     @Override
     public String toString() {

@@ -29,13 +29,11 @@ public class AdminsController {
 
     private final UsersValidator validator;
     private final UserService userService;
-    private final RolesRepository rolesRepository;
 
     @Autowired
-    public AdminsController(UsersValidator validator, UserService userService, RolesRepository rolesRepository) {
+    public AdminsController(UsersValidator validator, UserService userService) {
         this.validator = validator;
         this.userService = userService;
-        this.rolesRepository = rolesRepository;
     }
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -43,7 +41,7 @@ public class AdminsController {
             @Override
             protected Object convertElement(Object element) {
                 String roleName = (String) element;
-                return rolesRepository.findByName(roleName);
+                return userService.getRoleByName(roleName);
             }
         });
     }
@@ -56,11 +54,9 @@ public class AdminsController {
     }
     @PostMapping("/new")
     public String add(@AuthenticationPrincipal UserDetails details, @ModelAttribute("user") @Valid User user, BindingResult bindingResult, ModelMap model) {
-        System.out.println("1");
         validator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             System.out.println("Error " + bindingResult);
-            System.out.println("4");
             model.addAttribute("roles", userService.getRoles());
             model.addAttribute("auth", userService.findByUsername(details.getUsername()));
             model.addAttribute("users", userService.findAll());
@@ -73,10 +69,10 @@ public class AdminsController {
     @PostMapping("/edit")
     public String edit(@AuthenticationPrincipal UserDetails details, @RequestParam("id") Long id, @ModelAttribute("user") @Valid User user, BindingResult bindingResult, ModelMap model) {
         if (bindingResult.hasErrors()) {
+            System.out.println("Error " + bindingResult);
             model.addAttribute("roles", userService.getRoles());
             model.addAttribute("auth", userService.findByUsername(details.getUsername()));
             model.addAttribute("users", userService.findAll());
-            model.addAttribute("openModal", true);
             return "admin_panel";
         }
         userService.update(id,user);
