@@ -7,10 +7,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class Init {
@@ -24,29 +21,46 @@ public class Init {
 
     @PostConstruct
     public void init() {
+        userService.addRole(new Role("ADMIN"));
+        userService.addRole(new Role("USER"));
         List<User> users = userService.findAll();
-        Long lastUserId = users.isEmpty() ? 0 : users.get(users.size() - 1).getId();
-        String adminName = String.format("admin%d", lastUserId + 1);
-        String adminSurname = String.format("admin%d", lastUserId + 1);
-        int age = (int) (Math.random() * (55 - 18 + 1)) + 18;
-        String adminUsername = String.format("admin%d@mail.ru", lastUserId + 1);
-        if (userService.getRoles() == null || userService.getRoles().isEmpty()) {
-            userService.addRole(Role.ADMIN);
-            userService.addRole(Role.USER);
-        }
+        Long lastUserId = users.isEmpty() ? null : users.get(users.size() - 1).getId();
 
-        userService.save(new User(adminName, adminSurname, age, adminUsername , User.ADMIN.getPassword(), Set.of(userService.getRoleByName(Role.ADMIN.getName()), userService.getRoleByName(Role.USER.getName()))));
+        String adminName = lastUserId == null ? "admin" : String.format("admin%d", lastUserId);
+        String adminSurname = lastUserId == null ? "admin" : String.format("admin%d", lastUserId);
+        String adminUsername = lastUserId == null ? "admin@mail.ru" : String.format("admin%d@mail.ru", lastUserId);
+
+        Set<Role> adminRoles = new HashSet<>();
+        adminRoles.add(userService.getRoleByName("ADMIN"));
+        adminRoles.add(userService.getRoleByName("USER"));
+
+        User admin = new User(
+                adminName, // ----------------------------------------------------- Name
+                adminSurname, // -------------------------------------------------- Surname
+                (int) ((Math.random() * (55 - 18 + 1)) + 18), // ------------------ Age
+                adminUsername, // ------------------------------------------------- Username
+                "1", // ----------------------------------------------------------- Password
+                adminRoles // ----------------------------------------------------- Roles
+        );
+
+        userService.save(admin);
 
         for (int i = 0; i < 15; i++) {
             users = userService.findAll();
             lastUserId = users.isEmpty() ? 0 : users.get(users.size() - 1).getId();
-            String userName = String.format("user%d", lastUserId + 1);
-            String userSurname = String.format("user%d", lastUserId + 1);
-            age = (int) (Math.random() * (55 - 18 + 1)) + 18;
-            String userUsername = String.format("user%d@mail.ru", lastUserId + 1);
-            Set<Role> userRoles = Collections.singleton(userService.getRoleByName(User.USER.getName()));
 
-            userService.save(new User(userName, userSurname, age, userUsername, User.USER.getPassword(), userRoles));
+            String userName = lastUserId == null ? "user" : String.format("user%d", lastUserId);
+            String userSurname = lastUserId == null ? "user" : String.format("user%d", lastUserId);
+            String userUsername = lastUserId == null ? "user@mail.ru" : String.format("user%d@mail.ru", lastUserId);
+
+            userService.save(new User(
+                    userName, // -------------------------------------------------------------------- Name
+                    userSurname, // ----------------------------------------------------------------- Surname
+                    (int) ((Math.random() * (55 - 18 + 1)) + 18), // -------------------------------- Age
+                    userUsername, // ---------------------------------------------------------------- Username
+                    "1", // ------------------------------------------------------------------------- Password
+                    Collections.singleton(userService.getRoleByName("USER")) // --------------------- Roles
+            ));
         }
     }
 }

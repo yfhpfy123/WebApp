@@ -1,10 +1,11 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table
@@ -32,17 +33,12 @@ public class User {
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-
-    public static final User ADMIN = new User("admin", "admin", 30, "admin@mail.ru", "1", Set.of(Role.ADMIN, Role.USER));
-    public static final User USER = new User("user", "user", 30, "user@mail.ru", "1", Set.of(Role.USER));
-    public static final Set<Role> DEFAULT_ROLES = Set.of(Role.USER);
+    @JsonManagedReference
+    private Set<Role> roles;
 
     public User() {
         this.roles = new HashSet<>();
     }
-
-
 
     public User(String name, String surname, int age, String username, String password, Set<Role> roles) {
         this.name = name;

@@ -101,132 +101,28 @@
 <body>
 <header class="styled-header">
     <div class="left-part">
-        <strong><span th:object="${auth}" th:text="*{username}"></span></strong> with roles:
-        <span th:each="role : *{auth.roles}">
-            <span th:text="${role}"></span>
-        </span>
-    </div>
-    <div class="right-part">
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Logout"/>
-        </form>
+        <strong><span id="auth-username"></span></strong> with roles: <span id="auth-roles"></span>
     </div>
 </header>
 
-<div class="sidebar">
-    <ul>
-
-        <li>
-            <a class="nav-link" style="background-color: dodgerblue; color: white; border-radius: 5px" href="/admin">Admin</a>
-        </li>
-        <li><a class="nav-link" th:href="@{/user}">User</a></li>
-    </ul>
-</div>
-
-<div class="content">
-    <div class="container">
-        <h1>Admin panel</h1>
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users-tab" aria-selected="true">User table</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new-tab" aria-selected="false">New user</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-                <div class="tab-container">
-                    <div class="tab-header">
-                        <h3 style="padding: 10px; margin: 0">All users</h3>
-                        <input type="search" id="search-input" placeholder="Search..." style="margin: 10px; width: 20%">
-                    </div>
-                    <table class="table" th:object="${users}">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>FirstName</th>
-                            <th>Last name</th>
-                            <th>Age</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                        </tr>
-                        </thead>
-                        <tbody id="users-table-body"></tbody>
-                    </table>
-                    <div id="modals-container"></div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="new-tab">
-                <div class="tab-container">
-                    <div class="tab-header">
-                        <h3 style="padding: 10px; margin: 0">Add new user</h3>
-                    </div>
-                    <div class="tab-body">
-                        <form th:action="@{/admin/new}" th:object="${user}" method="post">
-                            <div class="form-group">
-                                <label for="new-name">First Name</label>
-                                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                                <input type="text" class="form-control" th:field="*{name}" id="new-name" placeholder="Enter First Name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-surname">Last Name</label>
-                                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
-                                <input type="text" class="form-control" th:field="*{surname}" id="new-surname" placeholder="Enter Last Name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-age">Age</label>
-                                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
-                                <input type="number" class="form-control" th:field="*{age}" id="new-age" placeholder="Enter Age" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-username">Username</label>
-                                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-                                <input type="email" class="form-control" th:field="*{username}" id="new-username" placeholder="Enter Email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-password">Password</label>
-                                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-                                <input type="password" class="form-control" th:field="*{password}" id="new-password" placeholder="Enter Password" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="new-role">Role</label>
-                                <select multiple class="form-control" th:field="*{roles}" id="new-role">
-                                    <option th:each="role : ${roles}" th:text="${role}" th:value="${role}"></option>
-                                </select>
-                            </div>
-                            <input type="submit" style="background-color: green; border: none; color: white" class="btn btn-primary" value="Add new user">
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<c:if test="${openModal}">
-    <script>
-        $(document).ready(function () {
-            $('#staticBackdrop').modal('show');
-        });
-    </script>
-</c:if>
 <script>
-    const searchInput = document.getElementById('search-input');
-    const tableRows = document.querySelectorAll('tbody tr');
+    async function fetchAuthData() {
+        try {
+            let response = await fetch('api/auth');
+            let auth = await response.json();
 
-    searchInput.addEventListener('input', function() {
-        const searchTerm = searchInput.value.toLowerCase();
-        tableRows.forEach(function(row) {
-            const rowText = row.textContent.toLowerCase();
-            if (rowText.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
+            let authUsername = document.getElementById('auth-username');
+            let authRoles = document.getElementById('auth-roles');
+
+            authUsername.textContent = auth.username;
+            authRoles.textContent = auth.roles.map(role => role.name).join(' ');
+
+        } catch (error) {
+            console.error('Error fetching auth data:', error);
+        }
+    }
+
+    fetchAuthData();
 </script>
 <script src="admin.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
