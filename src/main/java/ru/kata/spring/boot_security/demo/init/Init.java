@@ -21,8 +21,10 @@ public class Init {
 
     @PostConstruct
     public void init() {
-        userService.addRole(new Role("ADMIN"));
-        userService.addRole(new Role("USER"));
+        if (userService.getRoles().isEmpty()) {
+            userService.addRole(new Role("ADMIN"));
+            userService.addRole(new Role("USER"));
+        }
         List<User> users = userService.findAll();
         Long lastUserId = users.isEmpty() ? null : users.get(users.size() - 1).getId();
 

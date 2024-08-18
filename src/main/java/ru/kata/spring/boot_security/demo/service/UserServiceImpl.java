@@ -9,10 +9,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RolesRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,8 +41,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void save(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
+        if (getRoles() == null || getRoles().isEmpty()){
+            rolesRepository.save(new Role("ADMIN"));
+            rolesRepository.save(new Role("USER"));
+        }
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            user.setRoles(User.DEFAULT_ROLES);
+            user.setRoles(Collections.singleton(getRoleByName("USER")));
         }
         Set<Role> roles = new HashSet<>(rolesRepository.findAll());
         for (Role role : roles) {
