@@ -3,6 +3,8 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -20,14 +22,15 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userService.findAll();
+    @GetMapping("/auth")
+    public ResponseEntity<?> authInfo(@AuthenticationPrincipal UserDetails details) {
+        return ResponseEntity.ok(userService.findByUsername(details.getUsername())); // Возвращаем пользователя в формате JSON
     }
 
-    @GetMapping("/user")
-    public User getUserById(@PathVariable Long id) {
-        return userService.findOne(id);
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.findAll();
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/create")
@@ -36,13 +39,13 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PutMapping("/update/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         userService.update(id, user);
         return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();

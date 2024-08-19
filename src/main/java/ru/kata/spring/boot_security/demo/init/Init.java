@@ -47,7 +47,7 @@ public class Init {
 
         userService.save(admin);
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 2; i++) {
             users = userService.findAll();
             lastUserId = users.isEmpty() ? 0 : users.get(users.size() - 1).getId();
 
