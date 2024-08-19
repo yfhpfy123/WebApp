@@ -46,8 +46,8 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestParam("id") Long id, @RequestBody User user) {
         userService.update(id, user);
         return ResponseEntity.ok(user);
     }

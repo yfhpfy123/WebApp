@@ -33,4 +33,9 @@ public class TemplateController {
     public String findOne() {
         return "user";
     }
+
+    @GetMapping("user")
+    public String user(){
+        return "info";
+    }
 }

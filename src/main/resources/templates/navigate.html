@@ -159,6 +159,7 @@
         async function loadUsers() {
             try {
                 const response = await fetch('/api/all');
+
                 const users = await response.json();
                 const tableBody = document.getElementById('all-table-body');
                 const modalsContainer = document.getElementById('modals-container');
@@ -245,6 +246,9 @@
             </div>
         </div>
     `;
+                modal.querySelector('.btn-primary').onclick = function() {
+                    saveUser(user.id);
+                };
                 modalsContainer.appendChild(modal);
             } catch (error) {
                 console.error('Ошибка при загрузке ролей:', error);
@@ -269,8 +273,8 @@
             };
 
             try {
-                const response = await fetch(`/api/users/${userId}`, {
-                    method: 'PUT',
+                const response = await fetch(`/api/update?id=${userId}`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },

@@ -53,22 +53,6 @@
         .sidebar li {
             border-radius: 5px;
         }
-        .content {
-            width: calc(100% - 300px);
-            margin-left: 300px;
-            padding-left: 0;
-        }
-        .container {
-            max-width: 100%;
-            margin-left: 0;
-            margin-right: 20px;
-            padding-top: 80px;
-
-        }
-        .tab-content {
-            border: #ccc solid 1px;
-            margin-right: 10px;
-        }
         .tab-content table {
             padding-left: 20px;
             padding-right: 20px;
@@ -77,6 +61,30 @@
         }
         .tab-header {
             background-color: whitesmoke;
+        }
+        .tab-content table {
+            padding-left: 20px;
+            padding-right: 20px;
+            margin: 0;
+            background-color: white;
+        }
+        .user-info-container {
+            border: #ccc solid 1px;
+            margin-right: 20px;
+            margin-left: 300px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-top: 20px;
+        }
+        .table thead th {
+            background-color: white;
+        }
+        .table tbody {
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+        .container-mt-5 {
+            padding-top: 80px;
+            padding-left: 300px;
         }
     </style>
 </head>
@@ -97,8 +105,9 @@
         <li><p class="nav-link" style="background-color: dodgerblue; color: white; border-radius: 5px" href="/user">User</p></li>
     </ul>
 </div>
-
-<h1>User information-page</h1>
+<div class="container-mt-5">
+    <h1>User information-page</h1>
+</div>
 
 <div class="user-info-container">
     <div class="tab-container">
