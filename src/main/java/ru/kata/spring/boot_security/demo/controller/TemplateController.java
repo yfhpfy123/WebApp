@@ -29,7 +29,7 @@ public class TemplateController {
         return "admin";
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user_info")
     public String findOne() {
         return "user";
     }
