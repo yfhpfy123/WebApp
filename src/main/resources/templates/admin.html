@@ -10,7 +10,7 @@
             background-color: whitesmoke;
             height: auto;
         }
-        .stiled-header {
+        .styled-header {
             background-color: #1b1b1b;
             color: #c2c2c2;
             display: flex;
@@ -43,21 +43,28 @@
             padding: 5px;
             border-radius: 3px;
         }
-        .content-admin {
+        .content {
             margin-left: 300px;
             width: 80%;
 
         }
-        .container {
+        .container-admin {
             margin: 0;
             width: 100%;
             max-width: 100%;
             padding: 20px 0 20px 20px;
         }
+        .container-user-info {
+            margin: 0;
+            width: 100%;
+            max-width: 100%;
+            padding: 20px 0 20px 20px;
+        }
+
     </style>
 </head>
 <body>
-<header class="stiled-header">
+<header class="styled-header">
        <div class="left-part">
             <strong><span id="auth-username"></span></strong> with roles: <span id="auth-roles"></span>
        </div>
@@ -70,15 +77,15 @@
 
 <div class="sidebar">
     <div class="sidebar-btn-container">
-        <a class="sidebar-link" style="text-decoration: none; color: white; background-color: dodgerblue" id="admin-panel-link" href="#" onclick="">Admin</a>
+        <a class="sidebar-link" style="text-decoration: none; color: white; background-color: dodgerblue" id="admin-panel-link" href="#" onclick="showAdminPanel()">Admin</a>
     </div>
     <div class="sidebar-btn-container">
-        <a class="sidebar-link" style="text-decoration: none" id="user-info-link" href="#" onclick="">User</a>
+        <a class="sidebar-link" style="text-decoration: none" id="user-info-link" href="#" onclick="showUserInfo()">User</a>
     </div>
 </div>
 
-<div class="content-admin show" id="admin-panel">
-    <div class="container">
+<div class="content">
+    <div class="container-admin" id="admin-panel">
     <h1>Admin panel</h1>
         <div class="container-nav">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -153,30 +160,60 @@
             </div>
         </div>
     </div>
-</div>
-
-<div class="content-user hide" id="user-info">
-    <div class="container">
+    <div class="container-user-info" style="display: none" id="user-info">
         <h1>User information-page</h1>
+        <div class="container-nav">
+            <div class="text-container">
+                <h3 style="padding: 10px; margin: 0">About user</h3>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody id="user-table-body"></tbody>
+            </table>
+        </div>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Name</th>
-            <th>Last Name</th>
-            <th>Age</th>
-            <th>Role</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-        </thead>
-        <tbody id="user-table-body"></tbody>
-    </table>
 </div>
 
 <script>
+    async function showAdminPanel() {
+        const adminPanel = document.getElementById('admin-panel');
+        const adminPanelLink = document.getElementById('admin-panel-link');
+        const userInfo = document.getElementById('user-info');
+        const userInfoLink = document.getElementById('user-info-link');
+        if (adminPanel.style.display === 'none') {
+            adminPanel.style.removeProperty('display');
+            adminPanelLink.style.backgroundColor = 'dodgerblue';
+            adminPanelLink.style.color = 'white';
+            userInfoLink.style.backgroundColor = 'white';
+            userInfoLink.style.color = 'dodgerblue';
+            userInfo.style.display = 'none';
+        }
+    }
+    async function showUserInfo() {
+        const adminPanel = document.getElementById('admin-panel');
+        const adminPanelLink = document.getElementById('admin-panel-link');
+        const userInfo = document.getElementById('user-info');
+        const userInfoLink = document.getElementById('user-info-link');
+        if (userInfo.style.display === 'none') {
+            userInfo.style.removeProperty('display');
+            userInfoLink.style.backgroundColor = 'dodgerblue';
+            userInfoLink.style.color = 'white';
+            adminPanelLink.style.backgroundColor = 'white';
+            adminPanelLink.style.color = 'dodgerblue';
+            adminPanel.style.display = 'none';
+        }
+    }
     async function getAllUsers(){
         const response = await fetch('/api/all');
         const users = await response.json();
@@ -234,6 +271,24 @@
         document.getElementById('auth-username').textContent = data.username
         document.getElementById('auth-roles').textContent = data.roles.map(r => r.name).join(' ')
     })
+
+    getAllUsers().then((users) => {
+        users.forEach(user => {
+            document.getElementById('users-table-body').innerHTML += `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.name}</td>
+                <td>${user.surname}</td>
+                <td>${user.age}</td>
+                <td>${user.roles.map(role => role.name).join(' ')}</td>
+                <td><button class="btn btn-primary" onclick="editUser(${user.id})">Edit</button></td>
+                <td><button class="btn btn-danger" onclick="deleteUser(${user.id})">Delete</button></td>
+            </tr>
+            `
+        })
+    })
+
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
