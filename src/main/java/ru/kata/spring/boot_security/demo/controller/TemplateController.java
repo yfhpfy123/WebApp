@@ -20,22 +20,11 @@ public class TemplateController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @GetMapping("/admin")
     public String showSidebar() {
-        return "navigate";
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @GetMapping("/admin_panel")
-    public String showAdminPanel() {
         return "admin";
     }
 
-    @GetMapping("/user_info")
+    @GetMapping("/user")
     public String findOne() {
         return "user";
-    }
-
-    @GetMapping("user")
-    public String user(){
-        return "info";
     }
 }

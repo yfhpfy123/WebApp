@@ -25,7 +25,7 @@ public class UserRestController {
 
     @GetMapping("/auth")
     public ResponseEntity<?> authInfo(@AuthenticationPrincipal UserDetails details) {
-        return ResponseEntity.ok(userService.findByUsername(details.getUsername()));
+        return new ResponseEntity<>(userService.findByUsername(details.getUsername()), HttpStatus.OK);
     }
 
     @GetMapping("/all")
