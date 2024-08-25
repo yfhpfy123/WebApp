@@ -25,7 +25,7 @@ public class UserRestController {
 
     @GetMapping("/auth")
     public ResponseEntity<?> authInfo(@AuthenticationPrincipal UserDetails details) {
-        return ResponseEntity.ok(userService.findByUsername(details.getUsername())); // Возвращаем пользователя в формате JSON
+        return ResponseEntity.ok(userService.findByUsername(details.getUsername()));
     }
 
     @GetMapping("/all")
@@ -46,8 +46,8 @@ public class UserRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestParam("id") Long id, @RequestBody User user) {
+    @PostMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         userService.update(id, user);
         return ResponseEntity.ok(user);
     }
