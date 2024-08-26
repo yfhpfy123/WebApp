@@ -6,9 +6,163 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 
+    <style>
+        body {
+            background-color: whitesmoke;
+            height: auto;
+        }
+        .styled-header {
+            background-color: #1b1b1b;
+            color: #c2c2c2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+        .right-part .btn-primary {
+            text-decoration: none; color: #c2c2c2; background-color: initial; border: none
+        }
+        .right-part .btn-primary:hover {
+            color: white;
+        }
+        .sidebar {
+            background-color: white;
+            padding: 0;
+            width: 300px;
+            height: 100%;
+            margin-top: 20px;
+            border-radius: 3px;
+            position: fixed;
+            z-index: 999;
+
+        }
+        .sidebar-btn-container {
+            background-color: dodgerblue;
+            border-radius: 3px;
+        }
+        .sidebar-link {
+            display: flex;
+            padding: 5px;
+            border-radius: 3px;
+            color: white;
+        }
+        .sidebar-link:hover {
+            color: white;
+        }
+        .content {
+            margin-left: 300px;
+            width: 80%;
+
+        }
+        .container-user-info {
+            margin: 0;
+            width: 100%;
+            max-width: 100%;
+            padding: 20px 0 20px 20px;
+        }
+        .tab-header {
+            margin: 0;
+            background-color: whitesmoke;
+        }
+        .table {
+            border: #c2c2c2;
+        }
+        .tab-content {
+            box-shadow: #c2c2c2 0 0 5px;
+            background-color: white;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+    </style>
 </head>
 <body>
+<header class="styled-header">
+    <div class="left-part">
+        <strong><span id="auth-username"></span></strong> with roles: <span id="auth-roles"></span>
+    </div>
+    <div class="right-part">
+        <form class="form" method="POST" action="/logout">
+            <a class="btn btn-primary" type="submit" href="/logout">Logout</a>
+        </form>
+    </div>
+</header>
 
+<div class="sidebar">
+    <div class="sidebar-btn-container">
+        <a class="sidebar-link" style="text-decoration: none; font-size: 20px;" id="user-info-link" href="#" onclick="showUserInfo()">User</a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-user-info" id="user-info">
+        <h1>User information-page</h1>
+        <div class="container-nav">
+            <div class="tab-content">
+                <div class="tab-header">
+                    <h3 style="padding: 10px; margin: 0">About user</h3>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Last Name</th>
+                        <th>Age</th>
+                        <th>Role</th>
+                    </tr>
+                    </thead>
+                    <tbody id="user-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function showUserInfo() {
+        const adminPanel = document.getElementById('admin-panel');
+        const adminPanelLink = document.getElementById('admin-panel-link');
+        const userInfo = document.getElementById('user-info');
+        const userInfoLink = document.getElementById('user-info-link');
+        if (userInfo.style.display === 'none') {
+            adminPanel.classList.remove('show');
+            userInfo.classList.add('show');
+            userInfo.style.removeProperty('display');
+            userInfoLink.style.backgroundColor = 'dodgerblue';
+            userInfoLink.style.color = 'white';
+            adminPanelLink.style.backgroundColor = 'white';
+            adminPanelLink.style.color = 'dodgerblue';
+            adminPanel.style.display = 'none';
+        }
+    }
+    async function getCurrentUser() {
+        const response = await fetch('/api/auth');
+        return await response.json();
+    }
+
+    const auth = getCurrentUser();
+    auth.then((data) => {
+        document.getElementById('auth-username').textContent = data.username
+        document.getElementById('auth-roles').textContent = data.roles.map(r => r.name).join(' ')
+        document.getElementById('user-table-body').innerHTML += `
+            <tr>
+                <td>${data.id}</td>
+                <td>${data.username}</td>
+                <td>${data.name}</td>
+                <td>${data.surname}</td>
+                <td>${data.age}</td>
+                <td>${data.roles.map(role => role.name).join(' ')}</td>
+            </tr>
+            `
+    })
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
 </body>
