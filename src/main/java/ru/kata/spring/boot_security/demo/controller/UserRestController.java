@@ -1,15 +1,19 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -40,10 +44,11 @@ public class UserRestController {
         return ResponseEntity.ok(roles);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        System.out.println(user);
         userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+       return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/update/{id}")

@@ -60,6 +60,28 @@
             max-width: 100%;
             padding: 20px 0 20px 20px;
         }
+        .tab-header {
+            margin: 0;
+            background-color: whitesmoke;
+        }
+        .table {
+            border: #c2c2c2;
+        }
+        .tab-content {
+            box-shadow: #c2c2c2 0 0 5px;
+            background-color: white;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+        #new-user-form {
+
+            padding: 30px 30% 30px 30%;
+        }
 
     </style>
 </head>
@@ -77,10 +99,10 @@
 
 <div class="sidebar">
     <div class="sidebar-btn-container">
-        <a class="sidebar-link" style="text-decoration: none; color: white; background-color: dodgerblue" id="admin-panel-link" href="#" onclick="showAdminPanel()">Admin</a>
+        <a class="sidebar-link" style="text-decoration: none; font-size: 20px; color: white; background-color: dodgerblue" id="admin-panel-link" href="#" onclick="showAdminPanel()">Admin</a>
     </div>
     <div class="sidebar-btn-container">
-        <a class="sidebar-link" style="text-decoration: none" id="user-info-link" href="#" onclick="showUserInfo()">User</a>
+        <a class="sidebar-link" style="text-decoration: none; font-size: 20px;" id="user-info-link" href="#" onclick="showUserInfo()">User</a>
     </div>
 </div>
 
@@ -128,31 +150,30 @@
                         <div class="tab-body">
                             <form id="new-user-form">
                                 <div class="form-group">
-                                    <label for="username">Email</label>
-                                    <input type="text" class="form-control" id="username" placeholder="Email">
+                                    <label for="new-username">Email</label>
+                                    <input type="text" class="form-control" id="new-username" placeholder="Email">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Password">
+                                    <label for="new-password">Password</label>
+                                    <input type="password" class="form-control" id="new-password" placeholder="Password">
                                 </div>
                                 <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" placeholder="Name">
+                                    <label for="new-name">Name</label>
+                                    <input type="text" class="form-control" id="new-name" placeholder="Name">
                                 </div>
                                 <div class="form-group">
-                                    <label for="lastName">Last name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Last name">
+                                    <label for="new-lastName">Last name</label>
+                                    <input type="text" class="form-control" id="new-lastName" placeholder="Last name">
                                 </div>
                                 <div class="form-group">
-                                    <label for="age">Age</label>
-                                    <input type="number" class="form-control" id="age" placeholder="Age">
+                                    <label for="new-age">Age</label>
+                                    <input type="number" class="form-control" id="new-age" placeholder="Age">
                                 </div>
                                 <div class="form-group">
-                                    <label for="role">Role</label>
-                                    <select multiple class="form-control" id="role">
-                                    </select>
+                                    <label for="new-roles">Role</label>
+                                    <select multiple class="form-control" id="new-roles"></select>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Create</button>
+                                <button type="submit" id="form-btn-submit" onclick="saveUser()" style="width: 80%; margin-right: 10%; margin-left: 10%" class="btn btn-primary">Create</button>
                             </form>
                         </div>
                     </div>
@@ -163,24 +184,24 @@
     <div class="container-user-info" style="display: none" id="user-info">
         <h1>User information-page</h1>
         <div class="container-nav">
-            <div class="text-container">
-                <h3 style="padding: 10px; margin: 0">About user</h3>
+            <div class="tab-content">
+                <div class="tab-header">
+                    <h3 style="padding: 10px; margin: 0">About user</h3>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Last Name</th>
+                        <th>Age</th>
+                        <th>Role</th>
+                    </tr>
+                    </thead>
+                    <tbody id="user-table-body"></tbody>
+                </table>
             </div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Last Name</th>
-                    <th>Age</th>
-                    <th>Role</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody id="user-table-body"></tbody>
-            </table>
         </div>
     </div>
 </div>
@@ -192,6 +213,8 @@
         const userInfo = document.getElementById('user-info');
         const userInfoLink = document.getElementById('user-info-link');
         if (adminPanel.style.display === 'none') {
+            adminPanel.classList.add('show');
+            userInfo.classList.remove('show');
             adminPanel.style.removeProperty('display');
             adminPanelLink.style.backgroundColor = 'dodgerblue';
             adminPanelLink.style.color = 'white';
@@ -206,6 +229,8 @@
         const userInfo = document.getElementById('user-info');
         const userInfoLink = document.getElementById('user-info-link');
         if (userInfo.style.display === 'none') {
+            adminPanel.classList.remove('show');
+            userInfo.classList.add('show');
             userInfo.style.removeProperty('display');
             userInfoLink.style.backgroundColor = 'dodgerblue';
             userInfoLink.style.color = 'white';
@@ -230,16 +255,32 @@
         return roles
     }
 
-    async function saveUser(user) {
-        const response = await fetch('/api/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(user)
-        });
-        const result = await response.json();
-        return result
+    async function saveUser() {
+        document.getElementById('new-user-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const rolesData = await getRoles();
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            const name = document.getElementById('new-name').value;
+            const lastName = document.getElementById('new-lastName').value;
+            const age = document.getElementById('new-age').value;
+            const rolesArray = Array.from(document.getElementById('new-roles').selectedOptions).map(option => {
+                const role = rolesData.find(roleObj => roleObj.name === option.text);
+                return role;
+            });
+            const formData = {username, password, name, lastName, age, roles: rolesArray};
+
+            const response = await fetch('/api/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            const result = await response.json();
+            console.log(result);
+        })
     }
 
     async function deleteUser(user) {
@@ -270,6 +311,16 @@
     auth.then((data) => {
         document.getElementById('auth-username').textContent = data.username
         document.getElementById('auth-roles').textContent = data.roles.map(r => r.name).join(' ')
+        document.getElementById('user-table-body').innerHTML += `
+            <tr>
+                <td>${data.id}</td>
+                <td>${data.username}</td>
+                <td>${data.name}</td>
+                <td>${data.surname}</td>
+                <td>${data.age}</td>
+                <td>${data.roles.map(role => role.name).join(' ')}</td>
+            </tr>
+            `
     })
 
     getAllUsers().then((users) => {
@@ -289,6 +340,13 @@
         })
     })
 
+    getRoles().then((roles) => {
+        roles.forEach(role => {
+            document.getElementById('new-roles').innerHTML += `
+            <option value="${role}">${role.name}</option>
+            `
+        })
+    })
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
