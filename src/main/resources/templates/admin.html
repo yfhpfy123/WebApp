@@ -42,6 +42,22 @@
             display: flex;
             padding: 5px;
             border-radius: 3px;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        .sidebar-link:not(:hover) {
+            background-color: white;
+            color: dodgerblue;
+        }
+
+        .sidebar-link[data-active="true"] {
+            background-color: dodgerblue;
+            color: white;
         }
         .content {
             margin-left: 300px;
@@ -99,10 +115,10 @@
 
 <div class="sidebar">
     <div class="sidebar-btn-container">
-        <a class="sidebar-link" style="text-decoration: none; font-size: 20px; color: white; background-color: dodgerblue" id="admin-panel-link" href="#" onclick="showAdminPanel()">Admin</a>
+        <a class="sidebar-link" data-active="true" style="text-decoration: none; font-size: 20px" id="admin-panel-link" href="#" onmouseleave="returnColor(this)" onmousemove="editColor(this)" onclick="showAdminPanel()">Admin</a>
     </div>
     <div class="sidebar-btn-container">
-        <a class="sidebar-link" style="text-decoration: none; font-size: 20px;" id="user-info-link" href="#" onclick="showUserInfo()">User</a>
+        <a class="sidebar-link" data-active="false" style="text-decoration: none; font-size: 20px;" id="user-info-link" href="#" onmouseleave="returnColor(this)" onmousemove="editColor(this)" onclick="showUserInfo()">User</a>
     </div>
 </div>
 
@@ -207,6 +223,57 @@
 </div>
 
 <script>
+    async function returnColor(link) {
+        const adminPanel = document.getElementById('admin-panel');
+        const adminPanelLink = document.getElementById('admin-panel-link');
+        const userInfo = document.getElementById('user-info');
+        const userInfoLink = document.getElementById('user-info-link');
+        if (link.id === 'admin-panel-link') {
+            if (adminPanel.style.display !== 'none') {
+                adminPanelLink.style.backgroundColor = 'dodgerblue';
+                adminPanelLink.style.color = 'white';
+                userInfoLink.style.backgroundColor = 'white';
+                userInfoLink.style.color = 'dodgerblue';
+            }
+            if (userInfo.style.display !== 'none') {
+                adminPanelLink.style.backgroundColor = 'white';
+                adminPanelLink.style.color = 'dodgerblue';
+                userInfoLink.style.backgroundColor = 'dodgerblue';
+                userInfoLink.style.color = 'white';
+            }
+        }
+        if (link.id === 'user-info-link') {
+            if (adminPanel.style.display !== 'none') {
+                adminPanelLink.style.backgroundColor = 'dodgerblue';
+                adminPanelLink.style.color = 'white';
+                userInfoLink.style.backgroundColor = 'white';
+                userInfoLink.style.color = 'dodgerblue';
+            }
+            if (userInfo.style.display !== 'none') {
+                adminPanelLink.style.backgroundColor = 'white';
+                adminPanelLink.style.color = 'dodgerblue';
+                userInfoLink.style.backgroundColor = 'dodgerblue';
+                userInfoLink.style.color = 'white';
+            }
+        }
+    }
+    async function editColor(link) {
+        const adminPanelLink = document.getElementById('admin-panel-link');
+        const userInfoLink = document.getElementById('user-info-link');
+        if (link.id === 'admin-panel-link') {
+            adminPanelLink.style.backgroundColor = 'dodgerblue';
+            adminPanelLink.style.color = 'white';
+            userInfoLink.style.backgroundColor = 'white';
+            userInfoLink.style.color = 'dodgerblue';
+        }
+        if (link.id === 'user-info-link') {
+            adminPanelLink.style.backgroundColor = 'white';
+            adminPanelLink.style.color = 'dodgerblue';
+            userInfoLink.style.backgroundColor = 'dodgerblue';
+            userInfoLink.style.color = 'white';
+        }
+
+    }
     async function showAdminPanel() {
         const adminPanel = document.getElementById('admin-panel');
         const adminPanelLink = document.getElementById('admin-panel-link');
