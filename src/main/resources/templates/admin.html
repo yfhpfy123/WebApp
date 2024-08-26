@@ -330,13 +330,13 @@
             const username = document.getElementById('new-username').value;
             const password = document.getElementById('new-password').value;
             const name = document.getElementById('new-name').value;
-            const lastName = document.getElementById('new-lastName').value;
+            const surname = document.getElementById('new-lastName').value;
             const age = document.getElementById('new-age').value;
             const rolesArray = Array.from(document.getElementById('new-roles').selectedOptions).map(option => {
                 const role = rolesData.find(roleObj => roleObj.name === option.text);
-                return role;
+                return {id: role.id, name: role.name};
             });
-            const formData = {username, password, name, lastName, age, roles: rolesArray};
+            const formData = {username, password, name, surname, age, roles: rolesArray};
 
             const response = await fetch('/api/create', {
                 method: 'POST',
