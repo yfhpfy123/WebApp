@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -7,18 +9,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.DTO.RoleDTO;
+import ru.kata.spring.boot_security.demo.DTO.UserDTO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
 public class UserRestController {
 
     private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 
     @Autowired
     public UserRestController(UserService userService) {
@@ -42,11 +51,21 @@ public class UserRestController {
         return ResponseEntity.ok(roles);
     }
 
-    @PostMapping( value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        System.out.println(user);
+    @PostMapping( value = "/create", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        String name = userDTO.getName();
+        String surname = userDTO.getSurname();
+        String username = userDTO.getUsername();
+        int age = userDTO.getAge();
+        String password = userDTO.getPassword();
+        Set<Role> roles = new HashSet<>();
+        for (RoleDTO role : userDTO.getRoles()) {
+            roles.add(userService.getRoleByName(role.getName()));
+        }
+        User user = new User(name, surname, age, username, password, roles);
+
         userService.save(user);
-       return new ResponseEntity<>(HttpStatus.OK);
+       return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/update/{id}")

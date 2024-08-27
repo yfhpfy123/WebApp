@@ -128,7 +128,7 @@
         <div class="container-nav">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users-tab" aria-selected="true">User table</a>
+                <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" onclick="showAll()" aria-controls="users-tab" aria-selected="true">User table</a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new-tab" aria-selected="false">New user</a>
@@ -390,6 +390,25 @@
             `
     })
 
+    async function showAll () {
+        document.getElementById('users-table-body').innerHTML = '';
+        getAllUsers().then((users) => {
+            users.forEach(user => {
+                document.getElementById('users-table-body').innerHTML += `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.name}</td>
+                <td>${user.surname}</td>
+                <td>${user.age}</td>
+                <td>${user.roles.map(role => role.name).join(' ')}</td>
+                <td><button class="btn btn-primary" onclick="editUser(${user.id})">Edit</button></td>
+                <td><button class="btn btn-danger" onclick="deleteUser(${user.id})">Delete</button></td>
+            </tr>
+            `
+            })
+        })
+    }
     getAllUsers().then((users) => {
         users.forEach(user => {
             document.getElementById('users-table-body').innerHTML += `
