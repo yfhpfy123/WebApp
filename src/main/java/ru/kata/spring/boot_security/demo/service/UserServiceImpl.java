@@ -60,7 +60,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(Long id, User updatedUser) {
-        updatedUser.setPassword(encoder.encode(updatedUser.getPassword()));
+        User currentUser = findOne(id);
+
+        String currentPassword = currentUser.getPassword();
+        if (!currentPassword.equals(updatedUser.getPassword())) {
+            updatedUser.setPassword(encoder.encode(updatedUser.getPassword()));
+        }
+
+        Set<Role> currentRoles = currentUser.getRoles();
+        if (updatedUser.getRoles().isEmpty()) {
+            updatedUser.setRoles(currentRoles);
+        }
         updatedUser.setId(id);
         userRepository.save(updatedUser);
     }

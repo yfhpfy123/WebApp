@@ -68,15 +68,28 @@ public class UserRestController {
        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO) {
+        Long id = userDTO.getId();
+        String name = userDTO.getName();
+        String surname = userDTO.getSurname();
+        String username = userDTO.getUsername();
+        int age = userDTO.getAge();
+        String password = userDTO.getPassword();
+        Set<Role> roles = new HashSet<>();
+        for (RoleDTO role : userDTO.getRoles()) {
+            roles.add(userService.getRoleByName(role.getName()));
+        }
+        User user = new User(name, surname, age, username, password, roles);
+        user.setId(id);
+
         userService.update(id, user);
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteUser(@RequestBody Long id) {
         userService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

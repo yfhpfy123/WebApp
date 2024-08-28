@@ -155,7 +155,96 @@
                             </thead>
                             <tbody id="users-table-body"></tbody>
                         </table>
-                        <div id="modals-container"></div>
+                        <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="editUserForm" onsubmit="event.preventDefault(); updateUser();">
+                                            <div class="mb-3">
+                                                <label for="editUserId" class="form-label">ID</label>
+                                                <input type="text" class="form-control" id="editUserId" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editUserName" class="form-label">Name</label>
+                                                <input type="text" class="form-control" id="editUserName">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editUserLastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="editUserLastName">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editUserAge" class="form-label">Age</label>
+                                                <input type="number" class="form-control" id="editUserAge">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editUserEmail" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="editUserEmail">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editUserPassword" class="form-label">Password</label>
+                                                <input type="password" class="form-control" id="editUserPassword">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editUserRole" class="form-label">Role</label>
+                                                <select multiple class="form-control" id="editUserRole" required></select>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="editModal.hide()">Close</button>
+                                        <button type="submit" class="btn btn-primary" onclick="updateUser()">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="deleteUserForm" onsubmit="event.preventDefault(); deleteUser();">
+                                            <div class="mb-3">
+                                                <label for="deleteUserId" class="form-label">ID</label>
+                                                <input type="text" class="form-control" id="deleteUserId" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="deleteUserName" class="form-label">Name</label>
+                                                <input type="text" class="form-control" id="deleteUserName" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="deleteUserLastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="deleteUserLastName" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="deleteUserAge" class="form-label">Age</label>
+                                                <input type="number" class="form-control" id="deleteUserAge" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="deleteUserEmail" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="deleteUserEmail" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="deleteUserPassword" class="form-label">Password</label>
+                                                <input type="password" class="form-control" id="deleteUserPassword" disabled>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="deleteUserRole" class="form-label">Role</label>
+                                                <input type="text" class="form-control" id="deleteUserRole" disabled>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="deleteModal.hide()">Close</button>
+                                        <button type="submit" class="btn btn-primary" style="color: white; background-color: crimson" onclick="deleteUser()">Delete user</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="new-tab">
@@ -222,7 +311,12 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
 <script>
+    const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
     async function returnColor(link) {
         const adminPanel = document.getElementById('admin-panel');
         const adminPanelLink = document.getElementById('admin-panel-link');
@@ -257,6 +351,7 @@
             }
         }
     }
+
     async function editColor(link) {
         const adminPanelLink = document.getElementById('admin-panel-link');
         const userInfoLink = document.getElementById('user-info-link');
@@ -274,6 +369,7 @@
         }
 
     }
+
     async function showAdminPanel() {
         const adminPanel = document.getElementById('admin-panel');
         const adminPanelLink = document.getElementById('admin-panel-link');
@@ -290,6 +386,7 @@
             userInfo.style.display = 'none';
         }
     }
+
     async function showUserInfo() {
         const adminPanel = document.getElementById('admin-panel');
         const adminPanelLink = document.getElementById('admin-panel-link');
@@ -306,11 +403,41 @@
             adminPanel.style.display = 'none';
         }
     }
+
     async function getAllUsers(){
         const response = await fetch('/api/all');
         const users = await response.json();
         return users
     }
+
+    async function showAll () {
+        document.getElementById('users-table-body').innerHTML = '';
+        getAllUsers().then((users) => {
+            users.forEach(user => {
+                document.getElementById('users-table-body').innerHTML += `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.name}</td>
+                <td>${user.surname}</td>
+                <td>${user.age}</td>
+                <td>${user.roles.map(role => role.name).join(' ')}</td>
+                <td><button class="btn btn-primary" onclick="editUserModal(${user.id})">Edit</button></td>
+                <td><button class="btn btn-danger" onclick="deleteUserModal(${user.id})">Delete</button></td>
+            </tr>
+            `
+            })
+        })
+    }
+
+    showAll();
+
+    async function getUserById(userId) {
+        const users = await getAllUsers();
+        const user = users.find(user => user.id === userId);
+        return user
+    }
+
     async function getCurrentUser() {
         const response = await fetch('/api/auth');
         return await response.json();
@@ -321,6 +448,14 @@
         const roles = await response.json();
         return roles
     }
+
+    getRoles().then((roles) => {
+        roles.forEach(role => {
+            document.getElementById('new-roles').innerHTML += `
+            <option value="${role}">${role.name}</option>
+            `
+        })
+    });
 
     async function saveUser() {
         document.getElementById('new-user-form').addEventListener('submit', async function (event) {
@@ -350,28 +485,90 @@
         })
     }
 
-    async function deleteUser(user) {
+    async function deleteUser() {
+        const id = +document.getElementById('deleteUserId').value;
+
         const response = await fetch('/api/delete', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(id)
         });
         const result = await response.json();
+        showAll();
+        deleteModal.hide();
         return result
     }
 
-    async function updateUser(user) {
-        const response = await fetch('/api/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(user)
+    function deleteUserModal(userId) {
+        getUserById(userId).then((user) => {
+            document.getElementById('deleteUserId').value = user.id;
+            document.getElementById('deleteUserEmail').value = user.username;
+            document.getElementById('deleteUserName').value = user.name;
+            document.getElementById('deleteUserLastName').value = user.surname;
+            document.getElementById('deleteUserAge').value = user.age;
+            document.getElementById('deleteUserPassword').value = '***********';
+            document.getElementById('deleteUserRole').value = user.roles.map(role => role.name).join(' ');
+
+            deleteModal.show();
         });
-        const result = await response.json();
-        return result
+    }
+
+    async function updateUser() {
+
+            const rolesData = await getRoles();
+
+            const id = +document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value;
+            const surname = document.getElementById('editUserLastName').value;
+            const age = +document.getElementById('editUserAge').value;
+            const username = document.getElementById('editUserEmail').value;
+
+            const userInfo = await getUserById(id);
+            const newPassword = document.getElementById('editUserPassword').value;
+            const password = newPassword.trim() === '' ? userInfo.password : newPassword;
+
+            const rolesArray = Array.from(document.getElementById('editUserRole').selectedOptions).map(option => {
+                const role = rolesData.find(roleObj => roleObj.name === option.text);
+                return {id: role.id, name: role.name};
+            });
+        const user = {id, name, surname, age, username, password, roles: rolesArray};
+
+            const response = await fetch('/api/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(user)
+            });
+            const result = await response.json();
+            showAll();
+            editModal.hide();
+            return result
+    }
+
+    function editUserModal(userId) {
+        getUserById(userId).then((user) => {
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserEmail').value = user.username;
+            document.getElementById('editUserName').value = user.name;
+            document.getElementById('editUserLastName').value = user.surname;
+            document.getElementById('editUserAge').value = user.age;
+            document.getElementById('editUserPassword').value = '';
+
+            const rolesSelect = document.getElementById('editUserRole');
+            rolesSelect.innerHTML = '';
+            getRoles().then((roles) => {
+                roles.forEach(role => {
+                    rolesSelect.innerHTML += `
+            <option value="${role}">${role.name}</option>
+            `
+                })
+            })
+
+            editModal.show();
+        });
     }
 
     const auth = getCurrentUser();
@@ -388,51 +585,7 @@
                 <td>${data.roles.map(role => role.name).join(' ')}</td>
             </tr>
             `
-    })
-
-    async function showAll () {
-        document.getElementById('users-table-body').innerHTML = '';
-        getAllUsers().then((users) => {
-            users.forEach(user => {
-                document.getElementById('users-table-body').innerHTML += `
-            <tr>
-                <td>${user.id}</td>
-                <td>${user.username}</td>
-                <td>${user.name}</td>
-                <td>${user.surname}</td>
-                <td>${user.age}</td>
-                <td>${user.roles.map(role => role.name).join(' ')}</td>
-                <td><button class="btn btn-primary" onclick="editUser(${user.id})">Edit</button></td>
-                <td><button class="btn btn-danger" onclick="deleteUser(${user.id})">Delete</button></td>
-            </tr>
-            `
-            })
-        })
-    }
-    getAllUsers().then((users) => {
-        users.forEach(user => {
-            document.getElementById('users-table-body').innerHTML += `
-            <tr>
-                <td>${user.id}</td>
-                <td>${user.username}</td>
-                <td>${user.name}</td>
-                <td>${user.surname}</td>
-                <td>${user.age}</td>
-                <td>${user.roles.map(role => role.name).join(' ')}</td>
-                <td><button class="btn btn-primary" onclick="editUser(${user.id})">Edit</button></td>
-                <td><button class="btn btn-danger" onclick="deleteUser(${user.id})">Delete</button></td>
-            </tr>
-            `
-        })
-    })
-
-    getRoles().then((roles) => {
-        roles.forEach(role => {
-            document.getElementById('new-roles').innerHTML += `
-            <option value="${role}">${role.name}</option>
-            `
-        })
-    })
+    });
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
